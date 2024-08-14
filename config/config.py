@@ -1,5 +1,6 @@
 BASE_URL = "https://demowebshop.tricentis.com/"
 REGISTER_URL = "https://demowebshop.tricentis.com/register"
+COMPUTERS_URL= "https://demowebshop.tricentis.com/computers"
 
 REGISTRATION_DATA = {
     "gender": "male",

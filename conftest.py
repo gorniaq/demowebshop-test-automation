@@ -6,4 +6,4 @@ def driver(request):
     browser_name = request.config.getoption("--browser")
     driver = DriverFactory.get_driver(browser_name)
     yield driver
-    driver.quit()
+    DriverFactory.close_driver(driver)
