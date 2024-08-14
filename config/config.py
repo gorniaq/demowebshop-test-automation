@@ -5,7 +5,7 @@ REGISTRATION_DATA = {
     "gender": "male",
     "first_name": "John",
     "last_name": "Doe",
-    "email": "john.doe123@example.com",
+    "email": "john.doe@example.com",
     "password": "SecurePassword123",
     "confirm_password": "SecurePassword123"
 }

@@ -10,53 +10,56 @@ from config.config import REGISTER_URL, REGISTRATION_DATA, SUCCESS_MESSAGE
 from config.logger_config import logger
 
 
-@allure.feature('Registration')
-@allure.story('User can register with valid details')
-@pytest.mark.parametrize("browser_name", ["chrome", "firefox"])
-def test_registration(browser_name):
-    driver = DriverFactory.get_driver(browser_name)
-    driver.get(REGISTER_URL)
+class TestRegistrationPage:
+    @staticmethod
+    def generate_unique_email(base_email):
+        return f"{base_email.split('@')[0]}{int(time.time())}@{base_email.split('@')[1]}"
 
-    try:
-        with allure.step('Filling out the registration form'):
-            logger.info('Filling out the registration form')
-            gender_radio = WebDriverWait(driver, 20).until(EC.presence_of_element_located(LoginPageLocators.GENDER_MALE if REGISTRATION_DATA['gender'] == 'male' else LoginPageLocators.GENDER_FEMALE))
-            gender_radio.click()
+    @allure.feature('Registration')
+    @allure.story('User can register with valid details')
+    @pytest.mark.parametrize("browser_name", ["chrome", "firefox"])
+    def test_registration(self, browser_name):
+        driver = DriverFactory.get_driver(browser_name)
+        driver.get(REGISTER_URL)
 
-            unique_email = f"{REGISTRATION_DATA['email'].split('@')[0]}{int(time.time())}@{REGISTRATION_DATA['email'].split('@')[1]}"
-            fields = {
-                LoginPageLocators.FIRST_NAME: REGISTRATION_DATA['first_name'],
-                LoginPageLocators.LAST_NAME: REGISTRATION_DATA['last_name'],
-                LoginPageLocators.EMAIL: unique_email,
-                LoginPageLocators.PASSWORD: REGISTRATION_DATA['password'],
-                LoginPageLocators.CONFIRM_PASSWORD: REGISTRATION_DATA['confirm_password'],
-            }
+        try:
+            with allure.step('Filling out the registration form'):
+                logger.info('Filling out the registration form')
+                gender_radio = WebDriverWait(driver, 20).until(EC.presence_of_element_located(LoginPageLocators.GENDER_MALE if REGISTRATION_DATA['gender'] == 'male' else LoginPageLocators.GENDER_FEMALE))
+                gender_radio.click()
 
-            for locator, value in fields.items():
-                WebDriverWait(driver, 20).until(
-                    EC.presence_of_element_located(locator)
-                ).send_keys(value)
+                unique_email = self.generate_unique_email(REGISTRATION_DATA['email'])
+                fields = {
+                    LoginPageLocators.FIRST_NAME: REGISTRATION_DATA['first_name'],
+                    LoginPageLocators.LAST_NAME: REGISTRATION_DATA['last_name'],
+                    LoginPageLocators.EMAIL: unique_email,
+                    LoginPageLocators.PASSWORD: REGISTRATION_DATA['password'],
+                    LoginPageLocators.CONFIRM_PASSWORD: REGISTRATION_DATA['confirm_password'],
+                }
 
-        with allure.step('Submitting the registration form'):
-            logger.info('Submitting the registration form')
-            register_button = WebDriverWait(driver, 20).until(
-                EC.presence_of_element_located(LoginPageLocators.REGISTER_BUTTON)
-            )
-            register_button.click()
+                for locator, value in fields.items():
+                    WebDriverWait(driver, 20).until(
+                        EC.presence_of_element_located(locator)
+                    ).send_keys(value)
 
-        with allure.step('Verifying successful registration'):
-            logger.info('Verifying successful registration')
+            with allure.step('Submitting the registration form'):
+                logger.info('Submitting the registration form')
+                register_button = WebDriverWait(driver, 20).until(
+                    EC.presence_of_element_located(LoginPageLocators.REGISTER_BUTTON)
+                )
+                register_button.click()
 
-            success_message = WebDriverWait(driver, 20).until(
-                EC.visibility_of_element_located(LoginPageLocators.RESULT_MESSAGE)
-            )
-            assert_that(success_message.text, equal_to(SUCCESS_MESSAGE))
+            with allure.step('Verifying successful registration'):
+                logger.info('Verifying successful registration')
 
-    except Exception as e:
-        logger.error(f"Test failed due to {str(e)}")
-        allure.attach(driver.get_screenshot_as_png(), name="screenshot", attachment_type=allure.attachment_type.PNG)
-        raise
+                success_message = WebDriverWait(driver, 20).until(
+                    EC.visibility_of_element_located(LoginPageLocators.RESULT_MESSAGE)
+                )
+                assert_that(success_message.text, equal_to(SUCCESS_MESSAGE))
 
-    finally:
-        driver.quit()
+        except Exception as e:
+            logger.error(f"Test failed due to {str(e)}")
+            allure.attach(driver.get_screenshot_as_png(), name="screenshot", attachment_type=allure.attachment_type.PNG)
+            raise
+
 
