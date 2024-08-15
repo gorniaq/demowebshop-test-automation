@@ -1,5 +1,6 @@
 from selenium.webdriver.common.by import By
 
+
 class ComputersPageLocators:
 
     CATEGORY_LIST = (By.CLASS_NAME, "sub-category-grid")
