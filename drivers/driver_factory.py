@@ -11,10 +11,14 @@ class DriverFactory:
     def get_driver(browser_name="chrome"):
         if browser_name == "chrome":
             chrome_options = ChromeOptions()
-            chrome_options.add_argument("--headless")
+            chrome_options.add_argument("--incognito")
+            chrome_options.add_argument("--disable-cache")
+            # chrome_options.add_argument("--headless")
             driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
         elif browser_name == "firefox":
             firefox_options = webdriver.FirefoxOptions()
+            firefox_options.add_argument("--disable-cache")
+            firefox_options.add_argument("--incognito")
             firefox_options.add_argument("--headless")
             driver = webdriver.Firefox(service=FirefoxService(GeckoDriverManager().install()), options=firefox_options)
         else:

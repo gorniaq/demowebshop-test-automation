@@ -2,3 +2,4 @@
 .pytest_cache/
 reports/
 assets/
+allure-results

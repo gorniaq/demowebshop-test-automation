@@ -1,6 +1,7 @@
 import pytest
 from drivers.driver_factory import DriverFactory
 
+
 @pytest.fixture(scope="function")
 def driver(request):
     browser_name = request.config.getoption("--browser")
