@@ -21,9 +21,16 @@ class BooksPageLocators:
     PAGE_SIZE_OPTION_12 = (By.XPATH, "//option[@value='https://demowebshop.tricentis.com/books?pagesize=12']")
 
     ADD_TO_CART = (By.XPATH, "//input[@class='button-2 product-box-add-to-cart-button' and @value='Add to cart']")
+    ITEM_PRODUCT = (By.XPATH, "//div[@class='product-item']//a[@href='/computing-and-internet']")
     ITEM_NAME = (By.XPATH, "//h2[@class='product-title']/a")
+    ITEM_LINK = (By.XPATH, "//a[contains(@href, '/computing-and-internet')]")
     CART_QUANTITY = (By.XPATH, "//a[@class='ico-cart']//span[@class='cart-qty']")
     CART_LINK = (By.XPATH, "//*[@id ='topcartlink']/a")
     NOTIFICATION = (By.CSS_SELECTOR, "div.bar-notification.success")
     NOTIFICATION_CLOSE_BTN = (By.XPATH, '//input[contains(@class, "qty-input") and @name="itemquantity4513188"]')
+
+    # Locator for the 'Add to cart' button of the first item on the page
+    FIRST_ITEM_ADD_TO_CART = (By.XPATH, '//input[@id="add-to-cart-button-13"]')
+
+
 
