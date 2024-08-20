@@ -32,15 +32,15 @@ class TestRemoveFromCart:
 
             # Get the current cart quantity before adding a new item
             with allure.step("Get the current cart quantity"):
-                quantity_before = CartUtils.get_cart_quantity(driver)
+                quantity_before = CartUtils.get_items_quantity(driver, BooksPageLocators.CART_QUANTITY)
                 logger.info(f"Initial cart quantity: {quantity_before}")
 
-            # If the cart is empty, add a product to the cart
+            # # If the cart is empty, add a product to the cart
             if quantity_before == 0:
                 with allure.step("Cart is empty, adding a product to the cart"):
                     CartUtils.add_product_to_cart(driver, BooksPageLocators.ADD_TO_CART)
                     # Verify that the product was added
-                    quantity_after_adding = CartUtils.get_cart_quantity(driver)
+                    quantity_after_adding = CartUtils.get_items_quantity(driver, BooksPageLocators.CART_QUANTITY)
                     assert_that(quantity_after_adding, equal_to(1))
 
             # Navigate to the cart page
@@ -55,7 +55,7 @@ class TestRemoveFromCart:
             # Clear the cart using CartUtils
             with allure.step("Clear the cart"):
                 CartUtils.clear_cart(driver)
-                quantity_after_clearing = CartUtils.get_cart_quantity(driver)
+                quantity_after_clearing = CartUtils.get_items_quantity(driver, BooksPageLocators.CART_QUANTITY)
                 assert_that(quantity_after_clearing, equal_to(0))
 
         except Exception as e:

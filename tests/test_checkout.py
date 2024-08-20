@@ -18,29 +18,37 @@ class TestCheckout:
     @allure.story('Verify that a user can checkout an item')
     @pytest.mark.parametrize("browser_name", ["chrome", "firefox"])
     def test_checkout(self, browser_name):
+        # Initialize the WebDriver for the specified browser
         driver = DriverFactory.get_driver(browser_name)
+        logger.info(f"Initialized WebDriver for {browser_name}")
+
+        # Open the login URL and log in to the application
         BrowserUtils.open_url(driver, LOGIN_URL)
+        logger.info(f"Opened login URL: {LOGIN_URL}")
         AuthUtils.login(driver)
+        logger.info("Logged in successfully")
 
         try:
             # Check the current cart quantity
             with allure.step("Check cart quantity"):
-                quantity = CartUtils.get_cart_quantity(driver)
+                quantity = CartUtils.get_items_quantity(driver, BooksPageLocators.CART_QUANTITY)
                 logger.info(f"Current cart quantity: {quantity}")
 
                 if quantity == 0:
                     # If the cart is empty, navigate to the books page and add a product
                     with allure.step("Cart is empty, navigating to the products page"):
                         BrowserUtils.open_url(driver, BOOKS_URL)
+                        logger.info("Navigated to the books page to add a product.")
 
                     with allure.step("Add a product to the cart"):
                         add_to_cart_button = WebDriverWait(driver, 10).until(
                             EC.element_to_be_clickable(BooksPageLocators.ADD_TO_CART)
                         )
                         add_to_cart_button.click()
+                        logger.info("Clicked 'Add to Cart' button.")
 
                     # Verify the product was added
-                    quantity_after_adding = CartUtils.get_cart_quantity(driver)
+                    quantity_after_adding = CartUtils.get_items_quantity(driver, BooksPageLocators.CART_QUANTITY)
                     assert_that(quantity_after_adding, equal_to(1))
                 else:
                     # If the cart is not empty, proceed with the checkout process
@@ -52,6 +60,7 @@ class TestCheckout:
                     EC.element_to_be_clickable(BooksPageLocators.CART_LINK)
                 )
                 cart_link.click()
+                logger.info("Clicked on the cart link. Navigating to the cart page.")
 
             # Agree to terms and proceed to checkout
             with allure.step("Agree to terms and proceed to checkout"):
@@ -59,11 +68,13 @@ class TestCheckout:
                     EC.element_to_be_clickable(CheckoutPageLocators.TERMS_OF_SERVICE_CHECKBOX)
                 )
                 terms_checkbox.click()
+                logger.info("Agreed to terms of service by clicking on the checkbox.")
 
                 checkout_button = WebDriverWait(driver, 10).until(
                     EC.element_to_be_clickable(CheckoutPageLocators.CHECKOUT_BUTTON)
                 )
                 checkout_button.click()
+                logger.info("Clicked on the 'Proceed to Checkout' button.")
 
             # Verify the checkout form is displayed
             with allure.step("Verify checkout steps form is displayed"):

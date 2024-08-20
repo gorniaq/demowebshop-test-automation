@@ -20,17 +20,17 @@ class BrowserUtils:
         if expected_url:
             WebDriverWait(driver, 10).until(EC.url_to_be(expected_url))
 
-    @staticmethod
-    def check_url(driver: WebDriver, expected_url: str):
-        """Checks if the current URL matches the expected URL.
-                Args:
-                    driver (WebDriver): The WebDriver instance.
-                    expected_url (str): The expected URL to match.
-        """
-        WebDriverWait(driver, 10).until(
-            EC.url_to_be(expected_url)
-        )
-        assert_that(driver.current_url, equal_to(expected_url))
+    # @staticmethod
+    # def check_url(driver: WebDriver, expected_url: str):
+    #     """Checks if the current URL matches the expected URL.
+    #             Args:
+    #                 driver (WebDriver): The WebDriver instance.
+    #                 expected_url (str): The expected URL to match.
+    #     """
+    #     WebDriverWait(driver, 10).until(
+    #         EC.url_to_be(expected_url)
+    #     )
+    #     assert_that(driver.current_url, equal_to(expected_url))
 
     @staticmethod
     def scroll_to_element(driver, locator):

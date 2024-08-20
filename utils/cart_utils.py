@@ -10,11 +10,10 @@ from utils.notification_handler import NotificationHandler
 
 
 class CartUtils:
-
     @staticmethod
-    def clear_cart(driver):
-        """Clear all items from the cart if there are any."""
-        BrowserUtils.open_url(driver, CART_URL)
+    def clear(driver, url):
+        """Clear all items from the cart or wishlist if there are any."""
+        BrowserUtils.open_url(driver, url)
         WebDriverWait(driver, 20).until(
             EC.visibility_of_element_located(CartPageLocators.CHECKBOXES)
         )
@@ -35,6 +34,31 @@ class CartUtils:
         )
         assert_that(empty_cart_message_element.text, contains_string(EMPTY_CART_MESSAGE_TEXT))
         driver.back()
+
+    # @staticmethod
+    # def clear_cart(driver):
+    #     """Clear all items from the cart if there are any."""
+    #     BrowserUtils.open_url(driver, CART_URL)
+    #     WebDriverWait(driver, 20).until(
+    #         EC.visibility_of_element_located(CartPageLocators.CHECKBOXES)
+    #     )
+    #     checkboxes = driver.find_elements(*CartPageLocators.CHECKBOXES)
+    #     if checkboxes:
+    #         for checkbox in checkboxes:
+    #             if not checkbox.is_selected():
+    #                 checkbox.click()
+    #         update_cart_button = WebDriverWait(driver, 20).until(
+    #             EC.element_to_be_clickable(CartPageLocators.UPDATE_CART_BUTTON)
+    #         )
+    #         update_cart_button.click()
+    #         WebDriverWait(driver, 20).until(
+    #             EC.invisibility_of_element_located(CartPageLocators.CHECKBOXES)
+    #         )
+    #     empty_cart_message_element = WebDriverWait(driver, 20).until(
+    #         EC.visibility_of_element_located(CartPageLocators.EMPTY_CART_MESSAGE)
+    #     )
+    #     assert_that(empty_cart_message_element.text, contains_string(EMPTY_CART_MESSAGE_TEXT))
+    #     driver.back()
 
     @staticmethod
     def get_items_quantity(driver, locator):

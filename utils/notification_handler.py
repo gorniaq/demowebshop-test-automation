@@ -44,28 +44,6 @@ class NotificationHandler:
             logger.info("Notification close button was not present or clickable.")
 
     @staticmethod
-    def get_notification_text(driver):
-        """
-        Get the text from the notification if it is present.
-        Args:
-            driver: The WebDriver instance used to interact with the browser.
-        Returns:
-            The text of the notification if present; otherwise, an empty string.
-        """
-        try:
-            # Wait until the notification is visible
-            notification_element = WebDriverWait(driver, 10).until(
-                EC.visibility_of_element_located(BooksPageLocators.NOTIFICATION)
-            )
-            # Get the text of the notification
-            notification_text = notification_element.text
-            logger.info(f"Notification text: {notification_text}")
-            return notification_text
-        except TimeoutException:
-            logger.info("No notification found.")
-            return ""
-
-    @staticmethod
     def handle_notification(driver):
         """
         Handle the notification: close it if present, or wait for it to disappear.
@@ -76,3 +54,25 @@ class NotificationHandler:
         NotificationHandler.close_notification(driver)
         # Wait for the notification to disappear if it was not closed
         NotificationHandler.wait_for_notification_to_disappear(driver)
+
+    # @staticmethod
+    # def get_notification_text(driver):
+    #     """
+    #     Get the text from the notification if it is present.
+    #     Args:
+    #         driver: The WebDriver instance used to interact with the browser.
+    #     Returns:
+    #         The text of the notification if present; otherwise, an empty string.
+    #     """
+    #     try:
+    #         # Wait until the notification is visible
+    #         notification_element = WebDriverWait(driver, 10).until(
+    #             EC.visibility_of_element_located(BooksPageLocators.NOTIFICATION)
+    #         )
+    #         # Get the text of the notification
+    #         notification_text = notification_element.text
+    #         logger.info(f"Notification text: {notification_text}")
+    #         return notification_text
+    #     except TimeoutException:
+    #         logger.info("No notification found.")
+    #         return ""

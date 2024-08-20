@@ -115,6 +115,7 @@ class TestPageSize:
                     self.verify_item_count(actual_count, expected_count)
 
         except Exception as e:
+            # Log the error message if an exception occurs and attach a screenshot for debugging.
             logger.error("An error occurred: %s", str(e))
             allure.attach(driver.get_screenshot_as_png(), name="screenshot", attachment_type=allure.attachment_type.PNG)
             raise

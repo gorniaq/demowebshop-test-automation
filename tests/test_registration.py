@@ -26,8 +26,13 @@ class TestRegistrationPage:
     @allure.story('User can register with valid details')
     @pytest.mark.parametrize("browser_name", ["chrome", "firefox"])
     def test_registration(self, browser_name):
+        # Initialize the WebDriver for the specified browser
         driver = DriverFactory.get_driver(browser_name)
+        logger.info(f'Initialized WebDriver for {browser_name}')
+
+        # Open the registration page
         BrowserUtils.open_url(driver, REGISTER_URL)
+        logger.info(f'Navigated to {REGISTER_URL}')
 
         try:
             # Initialize the WebDriver for the specified browser
@@ -36,9 +41,11 @@ class TestRegistrationPage:
                 # Select gender radio button based on the gender specified in REGISTRATION_DATA
                 gender_radio = WebDriverWait(driver, 20).until(EC.presence_of_element_located(RegistrationPageLocators.GENDER_MALE if REGISTRATION_DATA['gender'] == 'male' else RegistrationPageLocators.GENDER_FEMALE))
                 gender_radio.click()
+                logger.info(f'Selected gender: {REGISTRATION_DATA["gender"]}')
 
                 # Generate a unique email for registration
                 unique_email = self.generate_unique_email(REGISTRATION_DATA['email'])
+                logger.info(f'Generated unique email: {unique_email}')
 
                 # Prepare a dictionary of form fields and their corresponding values
                 fields = {
@@ -54,6 +61,7 @@ class TestRegistrationPage:
                     WebDriverWait(driver, 20).until(
                         EC.presence_of_element_located(locator)
                     ).send_keys(value)
+                    logger.info(f'Filled field {locator} with value {value}')
 
             # Step to submit the registration form
             with allure.step('Submitting the registration form'):
@@ -63,6 +71,7 @@ class TestRegistrationPage:
                 )
                 # Locate and click the 'Register' button
                 register_button.click()
+                logger.info('Clicked the Register button')
 
             # Step to verify that the registration was successful
             with allure.step('Verifying successful registration'):
@@ -73,6 +82,7 @@ class TestRegistrationPage:
                     EC.visibility_of_element_located(RegistrationPageLocators.RESULT_MESSAGE)
                 )
                 assert_that(success_message.text, equal_to(SUCCESS_MESSAGE))
+                logger.info('Registration success message verified successfully')
 
         except Exception as e:
             # Log the error and attach a screenshot to the Allure report if the test fails
@@ -80,6 +90,3 @@ class TestRegistrationPage:
             allure.attach(driver.get_screenshot_as_png(), name="screenshot", attachment_type=allure.attachment_type.PNG)
             # Re-raise the exception to fail the test
             raise
-
-
-

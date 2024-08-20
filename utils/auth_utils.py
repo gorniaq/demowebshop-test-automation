@@ -4,7 +4,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from config.config import LOGIN_URL, LOGIN_DATA
 from locators.login_page_locators import LoginPageLocators
 from config.logger_config import logger
-from utils.browser_utils import BrowserUtils
 
 
 class AuthUtils:
@@ -42,5 +41,3 @@ class AuthUtils:
             logger.error(f"Login failed due to {str(e)}")
             allure.attach(driver.get_screenshot_as_png(), name="login_failure_screenshot", attachment_type=allure.attachment_type.PNG)
             raise
-
-
