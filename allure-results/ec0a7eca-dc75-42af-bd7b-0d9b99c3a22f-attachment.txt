@@ -1,6 +1,0 @@
-[31m[1mERROR   [0m test_registration:test_registration.py:47 Test failed due to Message: Unable to locate element: [id="gender-male"]; For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#no-such-element-exception
-Stacktrace:
-RemoteError@chrome://remote/content/shared/RemoteError.sys.mjs:8:8
-WebDriverError@chrome://remote/content/shared/webdriver/Errors.sys.mjs:193:5
-NoSuchElementError@chrome://remote/content/shared/webdriver/Errors.sys.mjs:511:5
-dom.find/</<@chrome://remote/content/shared/DOM.sys.mjs:136:16

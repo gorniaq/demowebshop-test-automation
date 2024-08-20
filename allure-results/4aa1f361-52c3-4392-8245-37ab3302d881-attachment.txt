@@ -1,1 +1,0 @@
-[31m[1mERROR   [0m test_registration:test_registration.py:47 Test failed due to 'NoneType' object has no attribute 'click'

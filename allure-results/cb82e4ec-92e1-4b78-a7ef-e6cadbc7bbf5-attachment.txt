@@ -1,1 +1,0 @@
-[1m[31mERROR   [0m config.logger_config:test_registration.py:59 Test failed due to Message: unknown variant `class`, expected one of `css selector`, `link text`, `partial link text`, `tag name`, `xpath` at line 1 column 17
