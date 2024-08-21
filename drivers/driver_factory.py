@@ -23,7 +23,7 @@ class DriverFactory:
             chrome_options = ChromeOptions()
             chrome_options.add_argument("--incognito")  # Open Chrome in Incognito mode
             chrome_options.add_argument("--disable-cache")  # Disable caching to ensure fresh data
-            # chrome_options.add_argument("--headless")  # run Chrome in headless mode
+            chrome_options.add_argument("--headless")  # run Chrome in headless mode
             # Create a Chrome WebDriver instance with the specified options
             driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()), options=chrome_options)
         elif browser_name == "firefox":
@@ -41,17 +41,3 @@ class DriverFactory:
         driver.maximize_window()
 
         return driver
-
-    @staticmethod
-    def close_driver(driver):
-        """
-            Close the WebDriver instance and stop the associated service.
-            Args:
-                driver (WebDriver): The WebDriver instance to close.
-        """
-        if driver:
-            if hasattr(driver, "service"):
-                # Stop the WebDriver service if it exists
-                driver.service.stop()
-            # Quit the WebDriver instance
-            driver.quit()

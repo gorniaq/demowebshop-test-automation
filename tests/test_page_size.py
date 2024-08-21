@@ -10,7 +10,7 @@ from locators.books_page_locators import BooksPageLocators
 from utils.browser_utils import BrowserUtils
 
 
-class TestPageSize:
+class TestPageSize(BrowserUtils):
 
     @staticmethod
     def select_page_size_option(driver, option_locator):
@@ -83,11 +83,12 @@ class TestPageSize:
 
     @allure.feature('Books page')
     @allure.story('Verify that allows changing number of items on page')
-    @pytest.mark.parametrize("browser_name", ["chrome", "firefox"])
-    def test_page_size(self, browser_name):
+    @pytest.mark.parametrize("driver", ["chrome", "firefox"], indirect=True)
+    def test_page_size(self, driver):
         # Initialize WebDriver for the specified browser and navigate to the Books page
-        driver = DriverFactory.get_driver(browser_name)
-        BrowserUtils.open_url(driver, BOOKS_URL)
+        logger.info(f"Initialized WebDriver for {driver}")
+
+        self.open_url(driver, BOOKS_URL)
 
         try:
             with allure.step("Locate and click on the page size dropdown"):

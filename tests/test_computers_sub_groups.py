@@ -5,21 +5,18 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from config.config import COMPUTERS_URL
 from config.logger_config import logger
-from drivers.driver_factory import DriverFactory
 from locators.computers_page_locators import ComputersPageLocators
 from config.config import EXPECTED_CATEGORY
 from utils.browser_utils import BrowserUtils
 
 
-class TestComputersCategory:
+class TestComputersCategory(BrowserUtils):
     @allure.feature('Computers Page')
     @allure.story('Verify Computers group has 3 sub-groups with correct names')
-    @pytest.mark.parametrize("browser_name", ["chrome", "firefox"])
-    def test_computers_sub_groups(self, browser_name):
-        # Initialize the WebDriver for the specified browser
-        driver = DriverFactory.get_driver(browser_name)
+    @pytest.mark.parametrize("driver", ["chrome", "firefox"], indirect=True)
+    def test_computers_sub_groups(self, driver):
         # Open the Computers category page using a utility function
-        BrowserUtils.open_url(driver, COMPUTERS_URL)
+        self.open_url(driver, COMPUTERS_URL)
 
         try:
             with allure.step('Wait for the sub-category list to load'):

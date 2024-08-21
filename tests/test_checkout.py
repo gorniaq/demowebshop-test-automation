@@ -3,41 +3,34 @@ import allure
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from hamcrest import assert_that, equal_to
-from config.config import BOOKS_URL, LOGIN_URL
+from config.config import BOOKS_URL
 from config.logger_config import logger
-from drivers.driver_factory import DriverFactory
 from utils.auth_utils import AuthUtils
 from utils.browser_utils import BrowserUtils
-from utils.cart_utils import CartUtils
+from utils.cart_and_wishlist_utils import CartAndWishlistUtils
 from locators.books_page_locators import BooksPageLocators
 from locators.checkout_page_locators import CheckoutPageLocators
 
 
-class TestCheckout:
+class TestCheckout(AuthUtils, BrowserUtils):
     @allure.feature('Checkout')
     @allure.story('Verify that a user can checkout an item')
-    @pytest.mark.parametrize("browser_name", ["chrome", "firefox"])
-    def test_checkout(self, browser_name):
-        # Initialize the WebDriver for the specified browser
-        driver = DriverFactory.get_driver(browser_name)
-        logger.info(f"Initialized WebDriver for {browser_name}")
-
+    @pytest.mark.parametrize("driver", ["chrome", "firefox"], indirect=True)
+    def test_checkout(self, driver):
         # Open the login URL and log in to the application
-        BrowserUtils.open_url(driver, LOGIN_URL)
-        logger.info(f"Opened login URL: {LOGIN_URL}")
-        AuthUtils.login(driver)
+        self.login(driver)
         logger.info("Logged in successfully")
 
         try:
             # Check the current cart quantity
             with allure.step("Check cart quantity"):
-                quantity = CartUtils.get_items_quantity(driver, BooksPageLocators.CART_QUANTITY)
+                quantity = CartAndWishlistUtils.get_items_quantity(driver, BooksPageLocators.CART_QUANTITY)
                 logger.info(f"Current cart quantity: {quantity}")
 
                 if quantity == 0:
                     # If the cart is empty, navigate to the books page and add a product
                     with allure.step("Cart is empty, navigating to the products page"):
-                        BrowserUtils.open_url(driver, BOOKS_URL)
+                        self.open_url(driver, BOOKS_URL)
                         logger.info("Navigated to the books page to add a product.")
 
                     with allure.step("Add a product to the cart"):
@@ -48,7 +41,7 @@ class TestCheckout:
                         logger.info("Clicked 'Add to Cart' button.")
 
                     # Verify the product was added
-                    quantity_after_adding = CartUtils.get_items_quantity(driver, BooksPageLocators.CART_QUANTITY)
+                    quantity_after_adding = CartAndWishlistUtils.get_items_quantity(driver, BooksPageLocators.CART_QUANTITY)
                     assert_that(quantity_after_adding, equal_to(1))
                 else:
                     # If the cart is not empty, proceed with the checkout process

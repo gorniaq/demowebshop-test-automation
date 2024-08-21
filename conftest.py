@@ -13,14 +13,13 @@ def driver(request):
     Returns:
         WebDriver: The initialized WebDriver instance.
     """
-    # Retrieve the browser name from the command-line options
-    browser_name = request.config.getoption("--browser")
+    # Retrieve the browser name from the pytest parameterization to initialize the appropriate WebDriver
+    browser_name = request.param
 
     # Initialize the WebDriver for the specified browser
     driver = DriverFactory.get_driver(browser_name)
 
     # Provide the WebDriver instance to the test function
     yield driver
+    driver.quit()
 
-    # Close the WebDriver instance after the test function finishes
-    DriverFactory.close_driver(driver)

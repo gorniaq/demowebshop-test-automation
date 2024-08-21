@@ -1,17 +1,15 @@
 import pytest
 import allure
-import time
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from hamcrest import assert_that, equal_to
-from drivers.driver_factory import DriverFactory
 from config.config import BOOKS_URL
 from locators.books_page_locators import BooksPageLocators
 from config.logger_config import logger
 from utils.browser_utils import BrowserUtils
 
 
-class TestSorting:
+class TestSorting(BrowserUtils):
 
     @staticmethod
     def select_sorting_option(driver, option_locator):
@@ -27,7 +25,6 @@ class TestSorting:
         logger.info(f"Selecting sorting option: {sort_option_text}")
         # Click the sorting option to apply it.
         option.click()
-        time.sleep(2)  # Wait for sorting to take effect
         return sort_option_text
 
     @staticmethod
@@ -48,7 +45,7 @@ class TestSorting:
         return product_titles, product_prices
 
     @staticmethod
-    def verify_sorting_by_name_ascending(product_titles):
+    def _verify_sorting_by_name_ascending(product_titles):
         """
         Verify that products are sorted by name in ascending (A to Z) order.
         :param product_titles: List of product title elements.
@@ -57,12 +54,10 @@ class TestSorting:
         sorted_titles = sorted([title.text for title in product_titles])
         # Get the actual list of titles from the page.
         actual_titles = [title.text for title in product_titles]
-        # Assert that the actual titles match the sorted titles.
-        assert_that(actual_titles, equal_to(sorted_titles), "Products are not sorted A to Z")
-        logger.info("Verified sorting by name A to Z")
+        return actual_titles, sorted_titles
 
     @staticmethod
-    def verify_sorting_by_name_descending(product_titles):
+    def _verify_sorting_by_name_descending(product_titles):
         """
         Verify that products are sorted by name in descending (Z to A) order.
         :param product_titles: List of product title elements.
@@ -71,12 +66,10 @@ class TestSorting:
         sorted_titles = sorted([title.text for title in product_titles], reverse=True)
         # Get the actual list of titles from the page.
         actual_titles = [title.text for title in product_titles]
-        # Assert that the actual titles match the sorted titles.
-        assert_that(actual_titles, equal_to(sorted_titles), "Products are not sorted Z to A")
-        logger.info("Verified sorting by name Z to A")
+        return actual_titles, sorted_titles
 
     @staticmethod
-    def verify_sorting_by_price_low_to_high(product_prices):
+    def _verify_sorting_by_price_low_to_high(product_prices):
         """
         Verify that products are sorted by price in ascending (low to high) order.
         :param product_prices: List of product price elements.
@@ -86,11 +79,10 @@ class TestSorting:
         # Get the actual list of prices from the page.
         actual_prices = [float(price.text.strip().replace('$', '')) for price in product_prices]
         # Assert that the actual prices match the sorted prices.
-        assert_that(actual_prices, equal_to(sorted_prices), "Products are not sorted by price from low to high")
-        logger.info("Verified sorting by price from low to high")
+        return actual_prices, sorted_prices
 
     @staticmethod
-    def verify_sorting_by_price_high_to_low(product_prices):
+    def _verify_sorting_by_price_high_to_low(product_prices):
         """
         Verify that products are sorted by price in descending (high to low) order.
         :param product_prices: List of product price elements.
@@ -99,16 +91,13 @@ class TestSorting:
         sorted_prices = sorted([float(price.text.strip().replace('$', '')) for price in product_prices], reverse=True)
         # Get the actual list of prices from the page.
         actual_prices = [float(price.text.strip().replace('$', '')) for price in product_prices]
-        # Assert that the actual prices match the sorted prices.
-        assert_that(actual_prices, equal_to(sorted_prices), "Products are not sorted by price from high to low")
-        logger.info("Verified sorting by price from high to low")
+        return actual_prices, sorted_prices
 
     @allure.feature('Books page')
     @allure.story('Verify sorting of items by different options')
-    @pytest.mark.parametrize("browser_name", ["chrome", "firefox"])
-    def test_sorting_options(self, browser_name):
-        driver = DriverFactory.get_driver(browser_name)
-        BrowserUtils.open_url(driver, BOOKS_URL)
+    @pytest.mark.parametrize("driver", ["chrome", "firefox"], indirect=True)
+    def test_sorting_options(self, driver):
+        self.open_url(driver, BOOKS_URL)
 
         try:
             # Locate and click on the sort by dropdown
@@ -144,13 +133,23 @@ class TestSorting:
                     if "Position" in sort_option_text:
                         logger.info("Checked sorting by position (default order)")
                     elif "Name A to Z" in sort_option_text:
-                        self.verify_sorting_by_name_ascending(product_titles)
+                        self._verify_sorting_by_name_ascending(product_titles)
+                        assert_that(actual_titles, equal_to(sorted_titles), "Products are not sorted A to Z")
+                        logger.info("Verified sorting by name A to Z")
                     elif "Name Z to A" in sort_option_text:
-                        self.verify_sorting_by_name_descending(product_titles)
+                        self._verify_sorting_by_name_descending(product_titles)
+                        assert_that(actual_titles, equal_to(sorted_titles), "Products are not sorted Z to A")
+                        logger.info("Verified sorting by name Z to A")
                     elif "Price Low to High" in sort_option_text:
-                        self.verify_sorting_by_price_low_to_high(product_prices)
+                        self._verify_sorting_by_price_low_to_high(product_prices)
+                        assert_that(actual_prices, equal_to(sorted_prices),
+                                    "Products are not sorted by price from low to high")
+                        logger.info("Verified sorting by price from low to high")
                     elif "Price High to Low" in sort_option_text:
-                        self.verify_sorting_by_price_high_to_low(product_prices)
+                        self._verify_sorting_by_price_high_to_low(product_prices)
+                        assert_that(actual_prices, equal_to(sorted_prices),
+                                    "Products are not sorted by price from high to low")
+                        logger.info("Verified sorting by price from low to high")
                     elif "Created On" in sort_option_text:
                         logger.info("Checked sorting by creation date (dummy check)")
                     else:

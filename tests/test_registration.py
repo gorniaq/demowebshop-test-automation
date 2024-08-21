@@ -4,14 +4,14 @@ import allure
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from hamcrest import assert_that, equal_to
-from drivers.driver_factory import DriverFactory
 from locators.registration_page_locators import RegistrationPageLocators
 from config.config import REGISTER_URL, REGISTRATION_DATA, SUCCESS_MESSAGE
 from config.logger_config import logger
+from utils.auth_utils import AuthUtils
 from utils.browser_utils import BrowserUtils
 
 
-class TestRegistrationPage:
+class TestRegistrationPage(AuthUtils):
     @staticmethod
     def generate_unique_email(base_email):
         """Generates a unique email address by appending the current timestamp to the base email.
@@ -24,11 +24,10 @@ class TestRegistrationPage:
 
     @allure.feature('Registration')
     @allure.story('User can register with valid details')
-    @pytest.mark.parametrize("browser_name", ["chrome", "firefox"])
-    def test_registration(self, browser_name):
+    @pytest.mark.parametrize("driver", ["chrome", "firefox"], indirect=True)
+    def test_registration(self, driver):
         # Initialize the WebDriver for the specified browser
-        driver = DriverFactory.get_driver(browser_name)
-        logger.info(f'Initialized WebDriver for {browser_name}')
+        logger.info(f'Initialized WebDriver for {driver}')
 
         # Open the registration page
         BrowserUtils.open_url(driver, REGISTER_URL)
@@ -58,19 +57,12 @@ class TestRegistrationPage:
 
                 # Fill in each field with the provided data
                 for locator, value in fields.items():
-                    WebDriverWait(driver, 20).until(
-                        EC.presence_of_element_located(locator)
-                    ).send_keys(value)
+                    self.fill_field(driver, locator, value)
                     logger.info(f'Filled field {locator} with value {value}')
 
             # Step to submit the registration form
             with allure.step('Submitting the registration form'):
-                logger.info('Submitting the registration form')
-                register_button = WebDriverWait(driver, 20).until(
-                    EC.presence_of_element_located(RegistrationPageLocators.REGISTER_BUTTON)
-                )
-                # Locate and click the 'Register' button
-                register_button.click()
+                self.submit_form(driver, RegistrationPageLocators.REGISTER_BUTTON)
                 logger.info('Clicked the Register button')
 
             # Step to verify that the registration was successful

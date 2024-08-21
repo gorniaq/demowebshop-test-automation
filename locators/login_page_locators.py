@@ -6,3 +6,6 @@ class LoginPageLocators:
     PASSWORD_INPUT = (By.ID, "Password")
     LOGIN_BUTTON = (By.CSS_SELECTOR, "input.login-button")
     ACCOUNT_LINK = (By.CSS_SELECTOR, "a.account")
+
+    LOGOUT_LINK = (By.XPATH, "//a[@class='ico-logout' and text()='Log out']")
+

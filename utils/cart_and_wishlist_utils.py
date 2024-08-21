@@ -9,7 +9,7 @@ from utils.browser_utils import BrowserUtils
 from utils.notification_handler import NotificationHandler
 
 
-class CartUtils:
+class CartAndWishlistUtils:
     @staticmethod
     def clear(driver, url):
         """Clear all items from the cart or wishlist if there are any."""
@@ -29,36 +29,6 @@ class CartUtils:
             WebDriverWait(driver, 20).until(
                 EC.invisibility_of_element_located(CartPageLocators.CHECKBOXES)
             )
-        empty_cart_message_element = WebDriverWait(driver, 20).until(
-            EC.visibility_of_element_located(CartPageLocators.EMPTY_CART_MESSAGE)
-        )
-        assert_that(empty_cart_message_element.text, contains_string(EMPTY_CART_MESSAGE_TEXT))
-        driver.back()
-
-    # @staticmethod
-    # def clear_cart(driver):
-    #     """Clear all items from the cart if there are any."""
-    #     BrowserUtils.open_url(driver, CART_URL)
-    #     WebDriverWait(driver, 20).until(
-    #         EC.visibility_of_element_located(CartPageLocators.CHECKBOXES)
-    #     )
-    #     checkboxes = driver.find_elements(*CartPageLocators.CHECKBOXES)
-    #     if checkboxes:
-    #         for checkbox in checkboxes:
-    #             if not checkbox.is_selected():
-    #                 checkbox.click()
-    #         update_cart_button = WebDriverWait(driver, 20).until(
-    #             EC.element_to_be_clickable(CartPageLocators.UPDATE_CART_BUTTON)
-    #         )
-    #         update_cart_button.click()
-    #         WebDriverWait(driver, 20).until(
-    #             EC.invisibility_of_element_located(CartPageLocators.CHECKBOXES)
-    #         )
-    #     empty_cart_message_element = WebDriverWait(driver, 20).until(
-    #         EC.visibility_of_element_located(CartPageLocators.EMPTY_CART_MESSAGE)
-    #     )
-    #     assert_that(empty_cart_message_element.text, contains_string(EMPTY_CART_MESSAGE_TEXT))
-    #     driver.back()
 
     @staticmethod
     def get_items_quantity(driver, locator):
@@ -69,12 +39,12 @@ class CartUtils:
         return int(cart_quantity_element.text.strip('()'))
 
     @staticmethod
-    def add_product_to_cart(driver, locator):
-        """Add the product on the page to the cart"""
-        add_to_cart_button = WebDriverWait(driver, 10).until(
+    def add_product(driver, locator):
+        """Add the product on the page to the cart or wishlist"""
+        add_to_wishlist_button = WebDriverWait(driver, 30).until(
             EC.element_to_be_clickable(locator)
         )
-        add_to_cart_button.click()
+        add_to_wishlist_button.click()
         NotificationHandler.handle_notification(driver)
 
     @staticmethod
@@ -84,3 +54,22 @@ class CartUtils:
             EC.visibility_of_element_located(locator)
         )
         return product_name_element.text
+
+    @staticmethod
+    def get_element_attribute(driver, locator, attribute):
+        """
+        Retrieves the value of a specified attribute from an element located by the provided locator.
+        Args:
+            driver (webdriver): The WebDriver instance used to interact with the browser.
+            locator (tuple): A tuple containing the locator strategy and value to locate the element (e.g., (By.ID, 'element_id')).
+            attribute (str): The name of the attribute whose value is to be retrieved.
+        Returns:
+            str: The value of the specified attribute from the located element.
+        """
+        # Wait until the element is visible on the page
+        element = WebDriverWait(driver, 10).until(
+            EC.visibility_of_element_located(locator)
+        )
+        # Retrieve the value of the specified attribute from the located element
+        attribute_value = element.get_attribute(attribute)
+        return attribute_value

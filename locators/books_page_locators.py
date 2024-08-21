@@ -27,7 +27,7 @@ class BooksPageLocators:
     CART_QUANTITY = (By.XPATH, "//a[@class='ico-cart']//span[@class='cart-qty']")
     CART_LINK = (By.XPATH, "//*[@id ='topcartlink']/a")
     NOTIFICATION = (By.CSS_SELECTOR, "div.bar-notification.success")
-    NOTIFICATION_CLOSE_BTN = (By.XPATH, '//input[contains(@class, "qty-input") and @name="itemquantity4513188"]')
+    NOTIFICATION_CLOSE_BTN = (By.CSS_SELECTOR, "#bar-notification .close")
 
     # Locator for the 'Add to cart' button of the first item on the page
     FIRST_ITEM_ADD_TO_CART = (By.XPATH, '//input[@id="add-to-cart-button-13"]')

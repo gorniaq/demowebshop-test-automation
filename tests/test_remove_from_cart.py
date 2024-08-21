@@ -3,44 +3,39 @@ import allure
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from hamcrest import assert_that, equal_to
-from config.config import CART_URL, BOOKS_URL, LOGIN_URL
+from config.config import CART_URL, BOOKS_URL
 from config.logger_config import logger
-from drivers.driver_factory import DriverFactory
 from locators.books_page_locators import BooksPageLocators
 from utils.auth_utils import AuthUtils
 from utils.browser_utils import BrowserUtils
-from utils.cart_utils import CartUtils
+from utils.cart_and_wishlist_utils import CartAndWishlistUtils
 
 
-class TestRemoveFromCart:
-
+class TestRemoveFromCart(BrowserUtils, AuthUtils, CartAndWishlistUtils):
     @allure.feature('Shopping Cart')
     @allure.story('Verify that a user can remove an item from the cart')
-    @pytest.mark.parametrize("browser_name", ["chrome", "firefox"])
-    def test_remove_from_cart(self, browser_name):
-        # Initialize the WebDriver for the specified browser
-        driver = DriverFactory.get_driver(browser_name)
-
+    @pytest.mark.parametrize("driver", ["chrome", "firefox"], indirect=True)
+    def test_remove_from_cart(self, driver):
         # Open the login URL and log in to the application
-        BrowserUtils.open_url(driver, LOGIN_URL)
-        AuthUtils.login(driver)
+        self.login(driver)
+        logger.info("Logged in successfully")
 
         try:
             # Navigate to the books page
             with allure.step("Navigate to the products page"):
-                BrowserUtils.open_url(driver, BOOKS_URL)
+                self.open_url(driver, BOOKS_URL)
 
             # Get the current cart quantity before adding a new item
             with allure.step("Get the current cart quantity"):
-                quantity_before = CartUtils.get_items_quantity(driver, BooksPageLocators.CART_QUANTITY)
+                quantity_before = CartAndWishlistUtils.get_items_quantity(driver, BooksPageLocators.CART_QUANTITY)
                 logger.info(f"Initial cart quantity: {quantity_before}")
 
             # # If the cart is empty, add a product to the cart
             if quantity_before == 0:
                 with allure.step("Cart is empty, adding a product to the cart"):
-                    CartUtils.add_product_to_cart(driver, BooksPageLocators.ADD_TO_CART)
+                    self.add_product(driver, BooksPageLocators.ADD_TO_CART)
                     # Verify that the product was added
-                    quantity_after_adding = CartUtils.get_items_quantity(driver, BooksPageLocators.CART_QUANTITY)
+                    quantity_after_adding = CartAndWishlistUtils.get_items_quantity(driver, BooksPageLocators.CART_QUANTITY)
                     assert_that(quantity_after_adding, equal_to(1))
 
             # Navigate to the cart page
@@ -52,10 +47,10 @@ class TestRemoveFromCart:
                 cart_link.click()
                 logger.info("Navigated to the cart page")
 
-            # Clear the cart using CartUtils
+            # Clear the cart using CartAndWishlistUtils
             with allure.step("Clear the cart"):
-                CartUtils.clear_cart(driver)
-                quantity_after_clearing = CartUtils.get_items_quantity(driver, BooksPageLocators.CART_QUANTITY)
+                self.clear(driver, CART_URL)
+                quantity_after_clearing = CartAndWishlistUtils.get_items_quantity(driver, BooksPageLocators.CART_QUANTITY)
                 assert_that(quantity_after_clearing, equal_to(0))
 
         except Exception as e:
