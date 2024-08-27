@@ -33,6 +33,6 @@ This project contains automated tests for the Demo Webshop site using Python, Se
       allure serve allure-results
       ```
 ## Allure Test Report
-![Allure Report.png](..%2F..%2FUsers%2Fallah%2FPictures%2FScreenshots%2FAllure%20Report.png)
+![Allure Report.png](https://imgur.com/fPy5Ush)
 
 All tests have passed successfully, as shown in the Allure report above.
