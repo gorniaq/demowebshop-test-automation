@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from config.logger_config import logger
 from locators.wishlist_page_locators import WishlistPageLocators
 from utils.auth_utils import AuthUtils
-from config.config import LOGIN_URL, WISHLIST_URL, BASE_URL
+from config.config import WISHLIST_URL, BASE_URL
 from utils.browser_utils import BrowserUtils
 from utils.cart_and_wishlist_utils import CartAndWishlistUtils
 

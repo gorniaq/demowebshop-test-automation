@@ -4,11 +4,10 @@ from hamcrest import assert_that, contains_string, equal_to
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from config.logger_config import logger
-from drivers.driver_factory import DriverFactory
 from locators.cart_page_locators import CartPageLocators
 from utils.auth_utils import AuthUtils
 from locators.books_page_locators import BooksPageLocators
-from config.config import BOOKS_URL, CART_URL, LOGIN_URL
+from config.config import BOOKS_URL, CART_URL
 from utils.browser_utils import BrowserUtils
 from utils.cart_and_wishlist_utils import CartAndWishlistUtils
 
