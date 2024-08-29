@@ -25,7 +25,7 @@ class BrowserUtils:
         )
 
     @staticmethod
-    def wait_for_element_to_be_clickable(driver, locator, timeout=20):
+    def wait_for_element_and_click(driver, locator, timeout=20):
         """
         Wait for an element to be clickable.
         """

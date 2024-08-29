@@ -31,7 +31,7 @@ class AuthUtils:
         """
            Logs out the user by clicking the logout link.
        """
-        BrowserUtils.wait_for_element_to_be_clickable(driver, LoginPageLocators.LOGOUT_LINK, 20)
+        BrowserUtils.wait_for_element_and_click(driver, LoginPageLocators.LOGOUT_LINK, 20)
 
     @staticmethod
     def login(driver):

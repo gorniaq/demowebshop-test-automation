@@ -28,9 +28,9 @@ class TestAddToWishlist(BrowserUtils, CartAndWishlistUtils):
 
         # Find and click on the 'Apparel & Shoes' link
         with allure.step("Find and click on the 'Apparel & Shoes' link and add a product to the wishlist"):
-            self.wait_for_element_to_be_clickable(driver, WishlistPageLocators.APPAREL_SHOES_LINK, 20)
+            self.wait_for_element_and_click(driver, WishlistPageLocators.APPAREL_SHOES_LINK, 20)
             # Find the first product item and navigate to page
-            self.wait_for_element_to_be_clickable(driver, WishlistPageLocators.PRODUCT_ITEM, 20)
+            self.wait_for_element_and_click(driver, WishlistPageLocators.PRODUCT_ITEM, 20)
             # Add the product to the wishlist from the product page
             self.add_product(driver, WishlistPageLocators.ADD_TO_WISHLIST_BUTTON)
 
@@ -38,7 +38,7 @@ class TestAddToWishlist(BrowserUtils, CartAndWishlistUtils):
         with allure.step("Navigate to the wishlist page to verify the product is added"):
             product_name = self.get_product_title(driver, WishlistPageLocators.ITEM_TITLE)
             BrowserUtils.scroll_to_top(driver)
-            self.wait_for_element_to_be_clickable(driver, WishlistPageLocators.WISHLIST_NAV_LINK, 20)
+            self.wait_for_element_and_click(driver, WishlistPageLocators.WISHLIST_NAV_LINK, 20)
 
         with allure.step("Verify that the product was added and the wishlist quantity increased by 1"):
             # Verify that the product is listed in the wishlist

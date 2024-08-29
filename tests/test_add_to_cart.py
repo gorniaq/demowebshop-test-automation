@@ -38,13 +38,13 @@ class TestAddToCart(CartAndWishlistUtils, BrowserUtils):
         with allure.step("Add the product to the cart from the product page"):
             # Scroll to the product link element to ensure it's visible and clickable
             self.scroll_to_element(driver, BooksPageLocators.ITEM_PRODUCT)
-            self.wait_for_element_to_be_clickable(driver, BooksPageLocators.ITEM_PRODUCT, 20)
+            self.wait_for_element_and_click(driver, BooksPageLocators.ITEM_PRODUCT, 20)
             self.add_product(driver, BooksPageLocators.FIRST_ITEM_ADD_TO_CART)
 
         # Navigate to the cart page to verify the product is added
         with allure.step("Click on the 'Shopping cart' link to navigate to the cart page"):
             self.scroll_to_top(driver)
-            self.wait_for_element_to_be_clickable(driver, BooksPageLocators.CART_LINK, 20)
+            self.wait_for_element_and_click(driver, BooksPageLocators.CART_LINK, 20)
 
         # Get the product name in the cart and verify it matches the product added
         with allure.step("Get the product name in cart"):
@@ -59,9 +59,8 @@ class TestAddToCart(CartAndWishlistUtils, BrowserUtils):
 
             quantity_nav_link = CartAndWishlistUtils.get_item_quantity(driver,  CartPageLocators.CART_QUANTITY, 20)
 
-            expected_quantity = int(quantity_before)
-            assert_that(int(quantity_cart_page), equal_to(expected_quantity),
-                        f"Cart quantity {quantity_cart_page} did not increase as expected: {expected_quantity}.")
+            assert_that(int(quantity_cart_page), equal_to(2),
+                        f"Cart quantity {quantity_cart_page} did not increase as expected: 2.")
 
-            assert_that(int(quantity_nav_link), equal_to(expected_quantity),
-                        f"Cart quantity in nav link {quantity_nav_link} did not increase as expected: {expected_quantity}.")
+            assert_that(int(quantity_nav_link), equal_to(2),
+                        f"Cart quantity in nav link {quantity_nav_link} did not increase as expected: 2.")

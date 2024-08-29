@@ -20,7 +20,7 @@ class NotificationHandler:
         Close the notification if it is present.
         """
         # Wait until the notification close button is clickable
-        BrowserUtils.wait_for_element_to_be_clickable(driver, BooksPageLocators.NOTIFICATION_CLOSE_BTN, 20)
+        BrowserUtils.wait_for_element_and_click(driver, BooksPageLocators.NOTIFICATION_CLOSE_BTN, 20)
         logger.info("Notification was closed.")
 
     @staticmethod

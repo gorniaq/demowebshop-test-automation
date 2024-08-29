@@ -19,7 +19,7 @@ class TestSorting(SortingUtils):
             self.open_url(driver, BOOKS_URL)
 
         # Locate and click on the sort by dropdown
-        self.wait_for_element_to_be_clickable(driver, BooksPageLocators.SORT_BY_DROPDOWN)
+        self.wait_for_element_and_click(driver, BooksPageLocators.SORT_BY_DROPDOWN)
 
         # Define sorting options and their expected behaviors
         sorting_options = [

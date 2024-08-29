@@ -37,7 +37,7 @@ class TestRemoveFromCart(BrowserUtils, CartAndWishlistUtils):
         # Navigate to the cart page
         with allure.step("Navigate to the cart page"):
             self.scroll_to_top(driver)
-            self.wait_for_element_to_be_clickable(driver, BooksPageLocators.CART_LINK, 20)
+            self.wait_for_element_and_click(driver, BooksPageLocators.CART_LINK, 20)
 
         # Clear the cart using CartAndWishlistUtils
         with allure.step("Clear the cart"):
