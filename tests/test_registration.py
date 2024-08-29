@@ -1,84 +1,61 @@
-import time
 import pytest
 import allure
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from hamcrest import assert_that, equal_to
 from locators.registration_page_locators import RegistrationPageLocators
-from config.config import REGISTER_URL, REGISTRATION_DATA, SUCCESS_MESSAGE
+from config.config import REGISTER_URL
+from constants import REGISTRATION_DATA, SUCCESS_MESSAGE
 from config.logger_config import logger
 from utils.auth_utils import AuthUtils
 from utils.browser_utils import BrowserUtils
+from utils.email_generator import EmailGenerator
 
 
-class TestRegistrationPage(AuthUtils):
-    @staticmethod
-    def generate_unique_email(base_email):
-        """Generates a unique email address by appending the current timestamp to the base email.
-        Args:
-            base_email (str): The base email address to be modified.
-        Returns:
-            str: A unique email address.
-        """
-        return f"{base_email.split('@')[0]}{int(time.time())}@{base_email.split('@')[1]}"
+class TestRegistrationPage(BrowserUtils, AuthUtils):
 
     @allure.feature('Registration')
     @allure.story('User can register with valid details')
     @pytest.mark.parametrize("driver", ["chrome", "firefox"], indirect=True)
     def test_registration(self, driver):
+
+        # Use the utility to open the login URL
+        with allure.step("Open URL"):
+            self.open_url(driver, REGISTER_URL)
+
         # Initialize the WebDriver for the specified browser
-        logger.info(f'Initialized WebDriver for {driver}')
+        with allure.step('Filling out the registration form'):
+            # Select gender radio button based on the gender specified in REGISTRATION_DATA
+            gender_radio = self.wait_for_element(
+                driver,
+                RegistrationPageLocators.GENDER_MALE if REGISTRATION_DATA[
+                                                            'gender'] == 'male' else RegistrationPageLocators.GENDER_FEMALE,
+                20
+            )
+            gender_radio.click()
+            logger.info(f'Selected gender: {REGISTRATION_DATA["gender"]}')
 
-        # Open the registration page
-        BrowserUtils.open_url(driver, REGISTER_URL)
-        logger.info(f'Navigated to {REGISTER_URL}')
+            # Generate a unique email for registration
+            unique_email = EmailGenerator.generate_unique_email(REGISTRATION_DATA['email'])
+            logger.info(f'Generated unique email: {unique_email}')
 
-        try:
-            # Initialize the WebDriver for the specified browser
-            with allure.step('Filling out the registration form'):
-                logger.info('Filling out the registration form')
-                # Select gender radio button based on the gender specified in REGISTRATION_DATA
-                gender_radio = WebDriverWait(driver, 20).until(EC.presence_of_element_located(RegistrationPageLocators.GENDER_MALE if REGISTRATION_DATA['gender'] == 'male' else RegistrationPageLocators.GENDER_FEMALE))
-                gender_radio.click()
-                logger.info(f'Selected gender: {REGISTRATION_DATA["gender"]}')
+            # Prepare a dictionary of form fields and their corresponding values
+            fields = {
+                RegistrationPageLocators.FIRST_NAME: REGISTRATION_DATA['first_name'],
+                RegistrationPageLocators.LAST_NAME: REGISTRATION_DATA['last_name'],
+                RegistrationPageLocators.EMAIL: unique_email,
+                RegistrationPageLocators.PASSWORD: REGISTRATION_DATA['password'],
+                RegistrationPageLocators.CONFIRM_PASSWORD: REGISTRATION_DATA['confirm_password'],
+            }
 
-                # Generate a unique email for registration
-                unique_email = self.generate_unique_email(REGISTRATION_DATA['email'])
-                logger.info(f'Generated unique email: {unique_email}')
+            # Fill in each field with the provided data
+            for locator, value in fields.items():
+                self.fill_field(driver, locator, value)
 
-                # Prepare a dictionary of form fields and their corresponding values
-                fields = {
-                    RegistrationPageLocators.FIRST_NAME: REGISTRATION_DATA['first_name'],
-                    RegistrationPageLocators.LAST_NAME: REGISTRATION_DATA['last_name'],
-                    RegistrationPageLocators.EMAIL: unique_email,
-                    RegistrationPageLocators.PASSWORD: REGISTRATION_DATA['password'],
-                    RegistrationPageLocators.CONFIRM_PASSWORD: REGISTRATION_DATA['confirm_password'],
-                }
+        # Step to submit the registration form
+        with allure.step('Submitting the registration form'):
+            self.submit_form(driver, RegistrationPageLocators.REGISTER_BUTTON)
 
-                # Fill in each field with the provided data
-                for locator, value in fields.items():
-                    self.fill_field(driver, locator, value)
-                    logger.info(f'Filled field {locator} with value {value}')
-
-            # Step to submit the registration form
-            with allure.step('Submitting the registration form'):
-                self.submit_form(driver, RegistrationPageLocators.REGISTER_BUTTON)
-                logger.info('Clicked the Register button')
-
-            # Step to verify that the registration was successful
-            with allure.step('Verifying successful registration'):
-                logger.info('Verifying successful registration')
-
-                # Verify that the success message is displayed and matches the expected message
-                success_message = WebDriverWait(driver, 20).until(
-                    EC.visibility_of_element_located(RegistrationPageLocators.RESULT_MESSAGE)
-                )
-                assert_that(success_message.text, equal_to(SUCCESS_MESSAGE))
-                logger.info('Registration success message verified successfully')
-
-        except Exception as e:
-            # Log the error and attach a screenshot to the Allure report if the test fails
-            logger.error(f"Test failed due to {str(e)}")
-            allure.attach(driver.get_screenshot_as_png(), name="screenshot", attachment_type=allure.attachment_type.PNG)
-            # Re-raise the exception to fail the test
-            raise
+        # Step to verify that the registration was successful
+        with (allure.step('Verifying successful registration')):
+            # Verify that the success message is displayed and matches the expected message
+            success_message = self.wait_for_element(driver, RegistrationPageLocators.RESULT_MESSAGE, 20)
+            assert_that(success_message.text, equal_to(SUCCESS_MESSAGE))
