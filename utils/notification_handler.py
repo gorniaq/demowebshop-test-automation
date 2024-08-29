@@ -1,4 +1,3 @@
-from selenium.common import TimeoutException
 from config.logger_config import logger
 from locators.books_page_locators import BooksPageLocators
 from utils.browser_utils import BrowserUtils

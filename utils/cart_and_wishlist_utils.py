@@ -28,6 +28,3 @@ class CartAndWishlistUtils:
         """Add the product on the page to the cart or wishlist"""
         BrowserUtils.wait_for_element_to_be_clickable(driver, locator, timeout)
         NotificationHandler.handle_notification(driver)
-
-
-
