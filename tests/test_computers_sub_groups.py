@@ -1,8 +1,5 @@
-import pytest
 import allure
 from hamcrest import assert_that, equal_to
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from config.config import COMPUTERS_URL
 from locators.computers_page_locators import ComputersPageLocators
 from constants import EXPECTED_CATEGORY
@@ -13,15 +10,13 @@ class TestComputersCategory(BrowserUtils):
 
     @allure.feature('Computers Page')
     @allure.story('Verify Computers group has 3 sub-groups with correct names')
-    @pytest.mark.parametrize("driver", ["chrome", "firefox"], indirect=True)
     def test_computers_sub_groups(self, driver):
         # Open the Computers category page using a utility function
-        with allure.step("Open URL"):
-            self.open_url(driver, COMPUTERS_URL)
+        self.open_url(driver, COMPUTERS_URL)
 
         with allure.step('Retrieve and verify sub-categories'):
             # Retrieve all elements representing sub-categories
-            category_items = self.wait_all_elements(driver, ComputersPageLocators.CATEGORY_ITEMS, 20)
+            category_items = self.wait_all_elements(driver, ComputersPageLocators.CATEGORY_ITEMS)
             # Extract the text (names) from the sub-category elements
             actual_category_names = [item.text for item in category_items]
 

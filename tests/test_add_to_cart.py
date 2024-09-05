@@ -14,11 +14,9 @@ class TestAddToCart(CartAndWishlistUtils, BrowserUtils):
 
     @allure.feature('Shopping Cart')
     @allure.story('Verify that a user can add an item to the cart')
-    @pytest.mark.parametrize("driver", ["chrome", "firefox"], indirect=True)
     def test_add_to_cart(self, driver):
         # Open the login URL ang Log in to the application
-        with allure.step("Log in to the application"):
-            AuthUtils.login(driver)
+        AuthUtils.login(driver)
 
         with allure.step("Clear the cart if is not empty"):
             # Get the current cart quantity before adding a new item
@@ -38,17 +36,17 @@ class TestAddToCart(CartAndWishlistUtils, BrowserUtils):
         with allure.step("Add the product to the cart from the product page"):
             # Scroll to the product link element to ensure it's visible and clickable
             self.scroll_to_element(driver, BooksPageLocators.ITEM_PRODUCT)
-            self.wait_for_element_and_click(driver, BooksPageLocators.ITEM_PRODUCT, 20)
+            self.wait_for_element_and_click(driver, BooksPageLocators.ITEM_PRODUCT)
             self.add_product(driver, BooksPageLocators.FIRST_ITEM_ADD_TO_CART)
 
         # Navigate to the cart page to verify the product is added
         with allure.step("Click on the 'Shopping cart' link to navigate to the cart page"):
             self.scroll_to_top(driver)
-            self.wait_for_element_and_click(driver, BooksPageLocators.CART_LINK, 20)
+            self.wait_for_element_and_click(driver, BooksPageLocators.CART_LINK)
 
         # Get the product name in the cart and verify it matches the product added
         with allure.step("Get the product name in cart"):
-            product_name_in_cart = self.get_product_title(driver, CartPageLocators.ITEM_NAME, 20)
+            product_name_in_cart = self.get_product_title(driver, CartPageLocators.ITEM_NAME)
             assert_that(product_name, contains_string(product_name_in_cart),
                         f"Product name in cart: {product_name_in_cart} does not match the expected name: {product_name}.")
 
@@ -57,7 +55,7 @@ class TestAddToCart(CartAndWishlistUtils, BrowserUtils):
             # Get the cart quantity from the input field on the Cart Page
             quantity_cart_page = self.get_element_attribute(driver, CartPageLocators.QUANTITY_IN_CART, 'value')
 
-            quantity_nav_link = CartAndWishlistUtils.get_item_quantity(driver,  CartPageLocators.CART_QUANTITY, 20)
+            quantity_nav_link = CartAndWishlistUtils.get_item_quantity(driver,  CartPageLocators.CART_QUANTITY)
 
             assert_that(int(quantity_cart_page), equal_to(2),
                         f"Cart quantity {quantity_cart_page} did not increase as expected: 2.")

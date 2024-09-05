@@ -1,4 +1,3 @@
-import pytest
 import allure
 from hamcrest import assert_that, less_than_or_equal_to, greater_than_or_equal_to
 
@@ -41,14 +40,12 @@ class TestPageSize(BrowserUtils):
 
     @allure.feature('Books page')
     @allure.story('Verify that allows changing number of items on page')
-    @pytest.mark.parametrize("driver", ["chrome", "firefox"], indirect=True)
     def test_page_size(self, driver):
-        # Use the utility to open the login URL
-        with allure.step("Open URL"):
-            self.open_url(driver, BOOKS_URL)
+        # Use the utility to open the URL
+        self.open_url(driver, BOOKS_URL)
 
         with allure.step("Locate and click on the page size dropdown"):
-            page_size_dropdown = self.wait_for_element(driver, BooksPageLocators.PAGE_SIZE_DROPDOWN, 20)
+            page_size_dropdown = self.wait_for_element(driver, BooksPageLocators.PAGE_SIZE_DROPDOWN)
             page_size_dropdown.click()
 
         # List of page size options to be tested

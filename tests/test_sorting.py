@@ -1,4 +1,3 @@
-import pytest
 import allure
 from hamcrest import assert_that, equal_to
 
@@ -12,11 +11,9 @@ class TestSorting(SortingUtils):
 
     @allure.feature('Books page')
     @allure.story('Verify sorting of items by different options')
-    @pytest.mark.parametrize("driver", ["chrome", "firefox"], indirect=True)
     def test_sorting_options(self, driver):
         # Use the utility to open the login URL
-        with allure.step("Open URL"):
-            self.open_url(driver, BOOKS_URL)
+        self.open_url(driver, BOOKS_URL)
 
         # Locate and click on the sort by dropdown
         self.wait_for_element_and_click(driver, BooksPageLocators.SORT_BY_DROPDOWN)
