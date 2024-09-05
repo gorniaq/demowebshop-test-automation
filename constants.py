@@ -29,3 +29,4 @@ LOGIN_DATA = {
 ADD_TO_CART_SUCCESS_MESSAGE = "The product has been added to your shopping cart"
 
 EMPTY_CART_MESSAGE_TEXT = 'Your Shopping Cart is empty!'
+
