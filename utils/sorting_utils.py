@@ -5,11 +5,11 @@ from utils.browser_utils import BrowserUtils
 class SortingUtils(BrowserUtils):
 
     @staticmethod
-    def get_product_titles_and_prices(driver):
+    def get_product_titles_and_prices(driver, locator_titles, locator_prices):
         # Find all product titles on the page.
-        product_titles = BrowserUtils.get_elements(driver, BooksPageLocators.PRODUCT_TITLES)
+        product_titles = BrowserUtils.get_elements(driver, locator_titles)
         # Find all product prices on the page.
-        product_prices = BrowserUtils.get_elements(driver, BooksPageLocators.PRODUCT_PRICES)
+        product_prices = BrowserUtils.get_elements(driver, locator_prices)
 
         return product_titles, product_prices
 
