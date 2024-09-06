@@ -1,4 +1,3 @@
-import pytest
 import allure
 from hamcrest import assert_that, equal_to
 from locators.login_page_locators import LoginPageLocators
@@ -9,13 +8,12 @@ from utils.browser_utils import BrowserUtils
 
 
 class TestLogin(BrowserUtils, AuthUtils):
+
     @allure.feature('Login Page')
     @allure.story('Verify that allows login a User')
-    @pytest.mark.parametrize("driver", ["chrome", "firefox"], indirect=True)
     def test_login(self, driver):
         # Use the utility to open the login URL
-        with allure.step("Open URL"):
-            self.open_url(driver, LOGIN_URL)
+        self.open_url(driver, LOGIN_URL)
 
         with allure.step("Fill in the email and password"):
             # Wait for the email input field to be present and then input the email from LOGIN_DATA
@@ -28,7 +26,7 @@ class TestLogin(BrowserUtils, AuthUtils):
             self.submit_form(driver, LoginPageLocators.LOGIN_BUTTON)
 
         with allure.step("Verify that the user is logged in and the correct account link is displayed"):
-            account_link = self.wait_for_element(driver, LoginPageLocators.ACCOUNT_LINK, 20)
+            account_link = self.wait_for_element(driver, LoginPageLocators.ACCOUNT_LINK)
 
             # Verify that the account link text matches the expected email
             assert_that(account_link.text, equal_to(LOGIN_DATA["email"]),

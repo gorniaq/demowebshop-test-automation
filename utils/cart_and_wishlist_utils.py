@@ -5,17 +5,17 @@ from utils.notification_handler import NotificationHandler
 
 class CartAndWishlistUtils:
     @staticmethod
-    def clear(driver, url):
+    def clear(driver, url, timeout=20):
         """Clear all items from the cart or wishlist if there are any."""
         BrowserUtils.open_url(driver, url)
-        BrowserUtils.wait_for_element(driver, CartPageLocators.CHECKBOXES, 20)
+        BrowserUtils.wait_for_element(driver, CartPageLocators.CHECKBOXES, timeout)
         checkboxes = driver.find_elements(*CartPageLocators.CHECKBOXES)
         if checkboxes:
             for checkbox in checkboxes:
                 if not checkbox.is_selected():
                     checkbox.click()
-            BrowserUtils.wait_for_element_and_click(driver, CartPageLocators.UPDATE_CART_BUTTON, 20)
-            BrowserUtils.wait_for_element_invisibility(driver, CartPageLocators.CHECKBOXES,20)
+            BrowserUtils.wait_for_element_and_click(driver, CartPageLocators.UPDATE_CART_BUTTON, timeout)
+            BrowserUtils.wait_for_element_invisibility(driver, CartPageLocators.CHECKBOXES, timeout)
 
     @staticmethod
     def get_item_quantity(driver, locator, timeout=30):

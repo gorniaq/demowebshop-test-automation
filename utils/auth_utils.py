@@ -1,5 +1,4 @@
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
+import allure
 from config.config import LOGIN_URL
 from constants import LOGIN_DATA
 from locators.login_page_locators import LoginPageLocators
@@ -18,35 +17,34 @@ class AuthUtils:
         logger.info(f"Field located by {locator} filled with data: '{value}'")
 
     @staticmethod
-    def submit_form(driver, locator):
+    def submit_form(driver, locator,  timeout=20):
         """
-            Click a button to submit the form.
+        Click a button to submit the form.
         """
-        WebDriverWait(driver, 20).until(
-            EC.element_to_be_clickable(locator)
-        ).click()
+        BrowserUtils.wait_for_element_and_click(driver, locator, timeout)
 
     @staticmethod
-    def logout(driver):
+    def logout(driver, timeout=20):
         """
-           Logs out the user by clicking the logout link.
-       """
-        BrowserUtils.wait_for_element_and_click(driver, LoginPageLocators.LOGOUT_LINK, 20)
+        Logs out the user by clicking the logout link.
+        """
+        BrowserUtils.wait_for_element_and_click(driver, LoginPageLocators.LOGOUT_LINK, timeout)
 
     @staticmethod
-    def login(driver):
+    def login(driver, timeout=20):
         """
-            Log in as a user using predefined login data.
+        Log in as a user using predefined login data.
         """
-        BrowserUtils.open_url(driver, LOGIN_URL)
+        with allure.step("Log in to the application"):
+            BrowserUtils.open_url(driver, LOGIN_URL)
 
-        # Fill in the email and password fields using the utility method
-        AuthUtils.fill_field(driver, LoginPageLocators.EMAIL_INPUT, LOGIN_DATA["email"])
-        AuthUtils.fill_field(driver, LoginPageLocators.PASSWORD_INPUT, LOGIN_DATA["password"])
+            # Fill in the email and password fields using the utility method
+            AuthUtils.fill_field(driver, LoginPageLocators.EMAIL_INPUT, LOGIN_DATA["email"])
+            AuthUtils.fill_field(driver, LoginPageLocators.PASSWORD_INPUT, LOGIN_DATA["password"])
 
-        # Submit the login form
-        AuthUtils.submit_form(driver, LoginPageLocators.LOGIN_BUTTON)
+            # Submit the login form
+            AuthUtils.submit_form(driver, LoginPageLocators.LOGIN_BUTTON)
 
-        # Verify that the user is logged in
-        account_link = BrowserUtils.wait_for_element(driver, LoginPageLocators.ACCOUNT_LINK, 20)
-        logger.info(f"User logged in successfully, account link found: '{account_link.text}'")
+            # Verify that the user is logged in
+            account_link = BrowserUtils.wait_for_element(driver, LoginPageLocators.ACCOUNT_LINK, timeout)
+            logger.info(f"User logged in successfully, account link found: '{account_link.text}'")

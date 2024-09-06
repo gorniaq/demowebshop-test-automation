@@ -1,4 +1,3 @@
-import pytest
 import allure
 from hamcrest import assert_that, equal_to
 
@@ -12,15 +11,12 @@ from utils.cart_and_wishlist_utils import CartAndWishlistUtils
 class TestRemoveFromCart(BrowserUtils, CartAndWishlistUtils):
     @allure.feature('Shopping Cart')
     @allure.story('Verify that a user can remove an item from the cart')
-    @pytest.mark.parametrize("driver", ["chrome", "firefox"], indirect=True)
     def test_remove_from_cart(self, driver):
         # Open the login URL and log in to the application
-        with allure.step("Log in to the application"):
-            AuthUtils.login(driver)
+        AuthUtils.login(driver)
 
         # Navigate to the books page
-        with allure.step("Navigate to the products page"):
-            self.open_url(driver, BOOKS_URL)
+        self.open_url(driver, BOOKS_URL)
 
         # Get the current cart quantity before adding a new item
         with allure.step("Get the current cart quantity"):
@@ -37,7 +33,7 @@ class TestRemoveFromCart(BrowserUtils, CartAndWishlistUtils):
         # Navigate to the cart page
         with allure.step("Navigate to the cart page"):
             self.scroll_to_top(driver)
-            self.wait_for_element_and_click(driver, BooksPageLocators.CART_LINK, 20)
+            self.wait_for_element_and_click(driver, BooksPageLocators.CART_LINK)
 
         # Clear the cart using CartAndWishlistUtils
         with allure.step("Clear the cart"):

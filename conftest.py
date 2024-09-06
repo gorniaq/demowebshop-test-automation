@@ -44,3 +44,16 @@ def pytest_runtest_makereport(item, call):
         # Attach the error text to the Allure report
         error_message = str(report.longrepr)
         allure.attach(error_message, name="Error Message", attachment_type=allure.attachment_type.TEXT)
+
+
+def pytest_generate_tests(metafunc):
+    """
+    This hook will be invoked for every test case, and it will parameterize
+    the 'driver' argument to use both 'chrome' and 'firefox'.
+    """
+    if "driver" in metafunc.fixturenames:
+        # Define the browser types (chrome, firefox) you want to test
+        browsers = ["chrome", "firefox"]
+
+        # Set the parameterization for the 'driver' argument
+        metafunc.parametrize("driver", browsers, indirect=True)

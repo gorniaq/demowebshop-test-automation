@@ -1,4 +1,3 @@
-import pytest
 import allure
 from hamcrest import assert_that, equal_to
 from locators.registration_page_locators import RegistrationPageLocators
@@ -14,12 +13,10 @@ class TestRegistrationPage(BrowserUtils, AuthUtils):
 
     @allure.feature('Registration')
     @allure.story('User can register with valid details')
-    @pytest.mark.parametrize("driver", ["chrome", "firefox"], indirect=True)
     def test_registration(self, driver):
 
         # Use the utility to open the login URL
-        with allure.step("Open URL"):
-            self.open_url(driver, REGISTER_URL)
+        self.open_url(driver, REGISTER_URL)
 
         # Initialize the WebDriver for the specified browser
         with allure.step('Filling out the registration form'):
@@ -57,5 +54,5 @@ class TestRegistrationPage(BrowserUtils, AuthUtils):
         # Step to verify that the registration was successful
         with (allure.step('Verifying successful registration')):
             # Verify that the success message is displayed and matches the expected message
-            success_message = self.wait_for_element(driver, RegistrationPageLocators.RESULT_MESSAGE, 20)
+            success_message = self.wait_for_element(driver, RegistrationPageLocators.RESULT_MESSAGE)
             assert_that(success_message.text, equal_to(SUCCESS_MESSAGE))
